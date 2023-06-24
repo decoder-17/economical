@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import tax from "../assets/tax.jpg";
 
 export default function InputSection() {
@@ -8,6 +8,70 @@ export default function InputSection() {
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
   };
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [role, setRole] = useState("");
+  const [location, setLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [basicSalary, setBasicSalary] = useState("");
+  const [hra, setHra] = useState("");
+  const [specialAllowance, setSpecialAllowance] = useState("");
+  const [travelAllowance, setTravelAllowance] = useState("");
+  const newTaxSlab = 700000;
+  const oldTaxSlab = 500000;
+  const newTaxSlabRate = 0.1;
+  const oldTaxSlabRate = 0.2;
+  const cess = 0.04;
+
+  const calculateTaxNew = () => {
+    const totalSalary =
+      parseInt(basicSalary) * 12 +
+      parseInt(hra) * 12 +
+      parseInt(specialAllowance) * 12 +
+      parseInt(travelAllowance);
+    const taxableIncome = totalSalary - 250000;
+    let tax = 0;
+    if (taxableIncome <= newTaxSlab) {
+      tax = taxableIncome * newTaxSlabRate;
+    } else {
+      tax =
+        newTaxSlab * newTaxSlabRate +
+        (taxableIncome - newTaxSlab) * oldTaxSlabRate;
+    }
+    tax = tax + tax * cess;
+    return tax;
+  };
+
+  const calculateTaxOld = () => {
+    const totalSalary =
+      parseInt(basicSalary) * 12 +
+      parseInt(hra) * 12 +
+      parseInt(specialAllowance) * 12 +
+      parseInt(travelAllowance);
+    const taxableIncome = totalSalary - 250000;
+    let tax = 0;
+    if (taxableIncome <= oldTaxSlab) {
+      tax = taxableIncome * oldTaxSlabRate;
+    } else {
+      tax =
+        oldTaxSlab * oldTaxSlabRate +
+        (taxableIncome - oldTaxSlab) * newTaxSlabRate;
+    }
+    tax = tax + tax * cess;
+    return tax;
+  };
+
+  const compareTax = () => {
+    const newTax = calculateTaxNew();
+    const oldTax = calculateTaxOld();
+    if (newTax < oldTax) {
+      console.log("New Tax Regime is better");
+    } else {
+      console.log("Old Tax Regime is better");
+    }
+  };
+
   return (
     <div className="">
       <div className="font-mono bg-white min-h-full flex justify-center align-middle rounded-2xl">
@@ -42,6 +106,7 @@ export default function InputSection() {
                         id="firstName"
                         type="text"
                         placeholder="First Name"
+                        onChange={(e) => setFirstName(e.target.value)}
                       />
                     </div>
                     <div className="md:ml-2">
@@ -56,6 +121,7 @@ export default function InputSection() {
                         id="lastName"
                         type="text"
                         placeholder="Last Name"
+                        onChange={(e) => setLastName(e.target.value)}
                       />
                     </div>
                   </div>
@@ -63,29 +129,31 @@ export default function InputSection() {
                     <div className="mb-4 md:mr-2 md:mb-0">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="firstName"
+                        htmlFor="role"
                       >
                         Role
                       </label>
                       <input
                         className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                        id="firstName"
+                        id="role"
                         type="text"
                         placeholder="Role"
+                        onChange={(e) => setRole(e.target.value)}
                       />
                     </div>
                     <div className="md:ml-2">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="lastName"
+                        htmlFor="location"
                       >
                         Location
                       </label>
                       <input
                         className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                        id="lastName"
+                        id="location"
                         type="text"
                         placeholder="Location"
+                        onChange={(e) => setLocation(e.target.value)}
                       />
                     </div>
                   </div>
@@ -101,28 +169,38 @@ export default function InputSection() {
                       id="email"
                       type="email"
                       placeholder="Email"
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="mb-4 md:flex md:justify-between">
                     <div className="mb-4 md:mr-2 md:mb-0">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="password"
+                        htmlFor="basicSalary"
                       >
                         Basic Salary
                       </label>
-                      <input className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" />
+                      <input
+                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        id="basicSalary"
+                        type="text"
+                        placeholder="Basic Salary"
+                        onChange={(e) => setBasicSalary(e.target.value)}
+                      />
                     </div>
                     <div className="md:ml-2">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="c_password"
+                        htmlFor="houseRentAllowance"
                       >
                         House Rent Allowance
                       </label>
                       <input
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                        id="c_password"
+                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        id="houseRentAllowance"
+                        type="text"
+                        placeholder="House Rent Allowance"
+                        onChange={(e) => setHra(e.target.value)}
                       />
                     </div>
                   </div>
@@ -130,35 +208,43 @@ export default function InputSection() {
                     <div className="mb-4 md:mr-2 md:mb-0">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="password"
+                        htmlFor="specialAllowance"
                       >
                         Special Allowance
                       </label>
-                      <input className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" />
+                      <input
+                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        id="specialAllowance"
+                        type="text"
+                        placeholder="Special Allowance"
+                        onChange={(e) => setSpecialAllowance(e.target.value)}
+                      />
                     </div>
                     <div className="md:ml-2">
                       <label
                         className="block mb-2 text-sm font-bold text-gray-700"
-                        htmlFor="c_password"
+                        htmlFor="travelAllowance"
                       >
                         Travel Allowance
                       </label>
                       <input
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                        id="c_password"
+                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        id="travelAllowance"
+                        type="text"
+                        placeholder="Travel Allowance"
+                        onChange={(e) => setTravelAllowance(e.target.value)}
                       />
                     </div>
                   </div>
-
-                  <div class="mb-6 text-center">
+                  <div className="mb-6 text-center">
                     <button
-                      class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                      className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
                       type="button"
+                      onClick={compareTax}
                     >
                       Calculate
                     </button>
                   </div>
-                  {/* <hr class="mb-6 border-t" /> */}
                 </form>
               </div>
             </div>
